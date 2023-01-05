@@ -46,15 +46,15 @@ const twitchEndpoints = {
 
 WebBrowser.maybeCompleteAuthSession();
 
+
 function AuthProvider({ children }: AuthProviderData) {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [user, setUser] = useState({} as User);
   const [userToken, setUserToken] = useState("");
-
+  
+  const  CLIENT_ID  = process.env.CLIENT_ID;
   // get CLIENT_ID from environment variables
-  const { CLIENT_ID } = process.env;
-
   async function signIn() {
     try {
       // set isLoggingIn to true
@@ -67,7 +67,7 @@ function AuthProvider({ children }: AuthProviderData) {
 
       const authUrl =
         twitchEndpoints.authorization +
-        `?client_id=1jib1zlrdn4d7gccr4q0oj859a8avc` +
+        `?client_id=${CLIENT_ID}` +
         `&redirect_uri=${REDIRECT_URI}` +
         `&response_type=${RESPONSE_TYPE}` +
         `&scope=${SCOPE}` +
@@ -82,8 +82,6 @@ function AuthProvider({ children }: AuthProviderData) {
 
         if(type === 'success'){
           api.defaults.headers.common['Authorization'] = 'Bearer ' + params.access_token;
-
-          debugger;
           setUserToken(params.access_token)
         }
         if(params.access_token){
@@ -129,7 +127,7 @@ function AuthProvider({ children }: AuthProviderData) {
 
   useEffect(() => {
     // add client_id to request's "Client-Id" header
-    api.defaults.headers.common["Client-Id"] = '1jib1zlrdn4d7gccr4q0oj859a8avc';
+    api.defaults.headers.common["Client-Id"] = `${CLIENT_ID}`;
   }, []);
 
   return (
